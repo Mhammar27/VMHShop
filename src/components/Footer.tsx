@@ -12,8 +12,7 @@ const Footer = () => {
             <div className="text-2xl tracking-wide">VMX</div>
           </Link>
           <p>
-            3252 Winding Way, Central Plaza, Willowbrook, CA 90210, United
-            States
+          85 Sylvan Way, Bristol, BS9 2NA
           </p>
           <span className="font-semibold">hello@VMX.com</span>
           <span className="font-semibold">+1 234 567 890</span>
@@ -40,7 +39,7 @@ const Footer = () => {
         </div>
         {/* RIGHT */}
         <div className="w-full md:w-1/2 lg:w-1/4 flex flex-col gap-8">
-          <h1 className="font-medium text-lg">SUBSCRIBE</h1>
+          {/* <h1 className="font-medium text-lg">SUBSCRIBE</h1>
           <p>
             Be the first to get the latest news about trends, promotions, and
             much more!
@@ -52,7 +51,7 @@ const Footer = () => {
               className="p-4 w-3/4"
             />
             <button className="w-1/4 bg-addcart text-white">JOIN</button>
-          </div>
+          </div> */}
           <span className="font-semibold">Secure Payments</span>
           <div className="flex justify-between">
             <Image src="/discover.png" alt="" width={40} height={20} />
