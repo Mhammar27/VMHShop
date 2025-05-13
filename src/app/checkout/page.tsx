@@ -5,6 +5,16 @@ import { useCartStore } from "@/hooks/useCartStore";
 import { useWixClient } from "@/hooks/useWixClient";
 import { useRouter } from "next/navigation";
 
+// Add this helper function up here
+function getCartSubtotal(cart: any): number {
+  if (!cart?.lineItems) return 0;
+  return cart.lineItems.reduce(
+    (sum: number, item: any) =>
+      sum + (Number(item.price?.amount) || 0) * (Number(item.quantity) || 1),
+    0
+  );
+}
+
 export default function CheckoutPage() {
   const wixClient = useWixClient();
   const {
@@ -35,9 +45,7 @@ export default function CheckoutPage() {
     setLoading(true);
     setError("");
 
-    const amount = cart?.subtotal?.amount
-      ? Number(cart.subtotal.amount).toFixed(2)
-      : "0.00";
+    const amount = getCartSubtotal(cart).toFixed(2);
 
     try {
       const res = await fetch("/api/checkout", {
@@ -228,9 +236,7 @@ export default function CheckoutPage() {
                 <span>Subtotal</span>
                 <span>
                   €
-                  {cart?.subtotal?.amount
-                    ? Number(cart.subtotal.amount).toFixed(2)
-                    : "0.00"}
+                  {getCartSubtotal(cart).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -245,9 +251,7 @@ export default function CheckoutPage() {
                 <span>Total</span>
                 <span>
                   €
-                  {cart?.subtotal?.amount
-                    ? Number(cart.subtotal.amount).toFixed(2)
-                    : "0.00"}
+                  {getCartSubtotal(cart).toFixed(2)}
                 </span>
               </div>
             </div>

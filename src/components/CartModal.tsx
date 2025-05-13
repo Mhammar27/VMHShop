@@ -4,7 +4,16 @@ import Image from "next/image";
 import { useCartStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
-import { currentCart } from "@wix/ecom";
+
+// Helper to calculate subtotal
+function getCartSubtotal(cart: any): number {
+  if (!cart?.lineItems) return 0;
+  return cart.lineItems.reduce(
+    (sum: number, item: any) =>
+      sum + (Number(item.price?.amount) || 0) * (Number(item.quantity) || 1),
+    0
+  );
+}
 
 const CartModal = () => {
   const wixClient = useWixClient();
@@ -13,7 +22,7 @@ const CartModal = () => {
   const handleCheckout = async () => {
     try {
       // Calculate total from cart
-      const amount = cart.subtotal.amount.toFixed(2); // Mollie needs 2 decimals as string
+      const amount = getCartSubtotal(cart).toFixed(2); // Mollie needs 2 decimals as string
 
       // Call your API to create the Mollie payment
       const res = await fetch("/api/checkout", {
@@ -21,7 +30,7 @@ const CartModal = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount,
-          description: "Order at My Store", // Customize!
+          description: "Order at My Store",
           redirectUrl: `${window.location.origin}/success`,
         }),
       });
@@ -40,7 +49,6 @@ const CartModal = () => {
 
   return (
     <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
-      {/* Safely handle null or empty cart */}
       {!cart || !cart.lineItems || cart.lineItems.length === 0 ? (
         <div>Cart is Empty</div>
       ) : (
@@ -104,7 +112,7 @@ const CartModal = () => {
           <div>
             <div className="flex items-center justify-between font-semibold">
               <span>Subtotal</span>
-              <span>${cart.subtotal.amount}</span>
+              <span>${getCartSubtotal(cart).toFixed(2)}</span>
             </div>
             <p className="text-gray-500 text-sm mt-2 mb-4">
               Shipping and taxes calculated at checkout.
