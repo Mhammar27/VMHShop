@@ -1,17 +1,31 @@
-// src/app/admin/orders/OrderList.tsx
 "use client";
 import { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 
+// Color mapping for Tailwind
+const colorMap = {
+  pending: "yellow",
+  paid: "green",
+  completed: "green",
+  cancelled: "red",
+  default: "gray"
+} as const;
+
+const bgClassMap = {
+  yellow: "bg-yellow-100 text-yellow-800",
+  green: "bg-green-100 text-green-800",
+  red: "bg-red-100 text-red-800",
+  gray: "bg-gray-100 text-gray-800"
+} as const;
+
 function StatusBadge({ status }: { status?: string }) {
-  let color = "gray";
-  if (status === "pending") color = "yellow";
-  else if (status === "paid" || status === "completed") color = "green";
-  else if (status === "cancelled") color = "red";
+  const color =
+    (colorMap[status as keyof typeof colorMap] as keyof typeof bgClassMap) ||
+    colorMap.default;
+  const bgClass = bgClassMap[color];
+
   return (
-    <span
-      className={`inline-block px-2 py-1 text-xs rounded font-semibold bg-${color}-100 text-${color}-800`}
-    >
+    <span className={`inline-block px-2 py-1 text-xs rounded font-semibold ${bgClass}`}>
       {status || "Unknown"}
     </span>
   );
@@ -136,7 +150,7 @@ export default function OrderList({ orders }: { orders: any[] }) {
                           {item.image && (
                             <img
                               src={item.image.replace(/^wix:image:\/\/v1\//, "/api/proxy-image/")}
-                              alt={item.productName?.original ?? "Product"}
+                              alt={(item.productName?.original ?? "Product").replace(/'/g, "&#39;")}
                               className="w-10 h-10 object-cover rounded"
                               onError={(e: any) => (e.target.style.display = "none")}
                             />
