@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import createMollieClient from "@mollie/api-client";
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb"; // <-- ADD THIS LINE
 
 const mollie = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY! });
 
@@ -15,8 +16,8 @@ export async function POST(req: NextRequest) {
     // Fetch payment from Mollie
     const payment = await mollie.payments.get(paymentId);
 
-    // Get your order id from Mollie metadata
-    const orderId = payment.metadata?.orderId;
+    // Get your order id from Mollie metadata (type assertion fix)
+    const orderId = (payment.metadata as { orderId?: string })?.orderId;
     if (!orderId) return new Response("No orderId in metadata", { status: 400 });
 
     // Map Mollie status to your status
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     const client = await clientPromise;
     const db = client.db("VMHShop");
     await db.collection("orders").updateOne(
-      { _id: orderId },
+      { _id: new ObjectId(orderId) }, // <-- CONVERT orderId TO ObjectId
       {
         $set: { status: newStatus, mollieStatus: payment.status },
       }

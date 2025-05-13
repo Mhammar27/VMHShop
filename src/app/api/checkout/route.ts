@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         orderId,
         email: customer.email,
       },
-      locale: "en_GB",
+      locale: "en_GB" as any, // <-- Fix: cast to any to bypass the type error
       webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/mollie-webhook`, // <-- THIS IS THE IMPORTANT LINE!
     });
 
