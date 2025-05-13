@@ -13,6 +13,7 @@
     "@wix/ecom": "^1.0.1117",
     "@wix/sdk": "^1.15.20",
     "@wix/stores": "^1.0.438",
+    "bcrypt": "^6.0.0",
     "isomorphic-dompurify": "^2.24.0",
     "js-cookie": "^3.0.5",
     "mongodb": "^6.16.0",
