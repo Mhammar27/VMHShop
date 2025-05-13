@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
+import Image from "next/image";
 
 // Color mapping for Tailwind
 const colorMap = {
@@ -8,14 +9,14 @@ const colorMap = {
   paid: "green",
   completed: "green",
   cancelled: "red",
-  default: "gray"
+  default: "gray",
 } as const;
 
 const bgClassMap = {
   yellow: "bg-yellow-100 text-yellow-800",
   green: "bg-green-100 text-green-800",
   red: "bg-red-100 text-red-800",
-  gray: "bg-gray-100 text-gray-800"
+  gray: "bg-gray-100 text-gray-800",
 } as const;
 
 function StatusBadge({ status }: { status?: string }) {
@@ -79,7 +80,10 @@ export default function OrderList({ orders }: { orders: any[] }) {
         } = order;
 
         return (
-          <div key={order._id} className="bg-white rounded shadow-md border border-gray-200 overflow-hidden">
+          <div
+            key={order._id}
+            className="bg-white rounded shadow-md border border-gray-200 overflow-hidden"
+          >
             <div
               className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition"
               onClick={() => handleToggle(idx)}
@@ -114,7 +118,9 @@ export default function OrderList({ orders }: { orders: any[] }) {
                 <div>
                   <div className="font-semibold mb-2">Customer Info</div>
                   <div className="text-gray-900">
-                    <div>{customer?.firstName} {customer?.lastName}</div>
+                    <div>
+                      {customer?.firstName} {customer?.lastName}
+                    </div>
                     <div>{customer?.email}</div>
                     <div>{customer?.phone}</div>
                   </div>
@@ -129,10 +135,20 @@ export default function OrderList({ orders }: { orders: any[] }) {
                 <div>
                   <div className="font-semibold mb-2">Order Info</div>
                   <div className="text-gray-700">
-                    <div><span className="text-gray-500">Order ID:</span> <span className="font-mono">{order._id}</span></div>
-                    <div><span className="text-gray-500">Status:</span> <StatusBadge status={status} /></div>
-                    <div><span className="text-gray-500">Amount:</span> {formatAmount(amount)}</div>
-                    <div><span className="text-gray-500">Placed at:</span> {formatDate(createdAt)}</div>
+                    <div>
+                      <span className="text-gray-500">Order ID:</span>{" "}
+                      <span className="font-mono">{order._id}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Status:</span>{" "}
+                      <StatusBadge status={status} />
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Amount:</span> {formatAmount(amount)}
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Placed at:</span> {formatDate(createdAt)}
+                    </div>
                     {description && (
                       <div className="mt-2 text-xs text-gray-500">{description}</div>
                     )}
@@ -148,15 +164,30 @@ export default function OrderList({ orders }: { orders: any[] }) {
                       {cartItems.map((item: any, i: number) => (
                         <li key={i} className="py-2 flex items-center gap-3">
                           {item.image && (
-                            <img
-                              src={item.image.replace(/^wix:image:\/\/v1\//, "/api/proxy-image/")}
-                              alt={(item.productName?.original ?? "Product").replace(/'/g, "&#39;")}
+                            <Image
+                              src={item.image.replace(
+                                /^wix:image:\/\/v1\//,
+                                "/api/proxy-image/"
+                              )}
+                              alt={
+                                (item.productName?.original ?? "Product").replace(
+                                  /'/g,
+                                  "&#39;"
+                                )
+                              }
+                              width={40}
+                              height={40}
                               className="w-10 h-10 object-cover rounded"
-                              onError={(e: any) => (e.target.style.display = "none")}
+                              onError={(e: any) => {
+                                e.target.style.display = "none";
+                              }}
+                              unoptimized
                             />
                           )}
                           <div>
-                            <div className="font-medium">{item.productName?.original ?? "Product"}</div>
+                            <div className="font-medium">
+                              {item.productName?.original ?? "Product"}
+                            </div>
                             <div className="text-xs text-gray-500">
                               Qty: <span className="font-semibold">{item.quantity}</span>{" "}
                               {item.price?.formattedAmount && (
