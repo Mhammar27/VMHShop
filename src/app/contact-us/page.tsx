@@ -45,7 +45,7 @@ export default function ContactUs() {
             </a>
           </li>
           <li>
-            <strong>Address:</strong> 85 Sylvan Way, Bristol, BS9 2NA
+            <strong>Address:</strong> 204 Bells Lane Hoo Rochester England ME3 9GD
           </li>
         </ul>
       </div>

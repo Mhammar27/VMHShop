@@ -14,7 +14,7 @@ export default function AboutUs() {
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-2 text-gray-800">Contact Information</h2>
         <ul className="text-gray-700">
-          <li><strong>Address:</strong> 85 Sylvan Way, Bristol, BS9 2NA</li>
+          <li><strong>Address:</strong> 204 Bells Lane Hoo Rochester England ME3 9GD</li>
           <li><strong>Email:</strong> vhmconstructionltd@gmail.com</li>
           <li><strong>Phone:</strong> +44 7342 106747</li>
         </ul>
