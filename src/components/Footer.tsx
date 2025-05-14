@@ -12,7 +12,7 @@ const Footer = () => {
             <span className="text-2xl tracking-wide font-bold">VMH</span>
           </Link>
           <p>
-            85 Sylvan Way, Bristol, BS9 2NA
+            204 Bells Lane Hoo Rochester England ME3 9GD
           </p>
           <span className="font-semibold">vhmconstructionltd@gmail.com</span>
           <span className="font-semibold">+44 7342 106747</span>
