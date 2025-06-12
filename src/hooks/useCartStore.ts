@@ -14,7 +14,7 @@ type CartState = {
     quantity: number
   ) => void;
   removeItem: (wixClient: WixClient, itemId: string) => void;
-  clearCart: (wixClient: WixClient) => void; // <-- ADD THIS TYPE
+  clearCart: (wixClient: WixClient) => void;
 };
 
 export const useCartStore = create<CartState>((set, get) => ({
@@ -76,34 +76,31 @@ export const useCartStore = create<CartState>((set, get) => ({
       set((state) => ({ ...state, isLoading: false }));
     }
   },
-clearCart: async (wixClient) => {
-  set((state) => ({ ...state, isLoading: true }));
-  try {
-    // Fetch the latest cart
-    const currentCart = await wixClient.currentCart.getCurrentCart();
-    const lineItemIds =
-      currentCart?.lineItems?.map((item: any) => item._id) || [];
+  clearCart: async (wixClient) => {
+    set((state) => ({ ...state, isLoading: true }));
+    try {
+      const currentCart = await wixClient.currentCart.getCurrentCart();
+      const lineItemIds =
+        currentCart?.lineItems?.map((item: any) => item._id) || [];
 
-    if (lineItemIds.length > 0) {
-      // Remove all items at once
-      const response = await wixClient.currentCart.removeLineItemsFromCurrentCart(lineItemIds);
+      if (lineItemIds.length > 0) {
+        const response = await wixClient.currentCart.removeLineItemsFromCurrentCart(lineItemIds);
 
-      set({
-        cart: response.cart,
-        counter: response.cart?.lineItems?.length || 0,
-        isLoading: false,
-      });
-    } else {
-      // Cart already empty
-      set({
-        cart: currentCart,
-        counter: 0,
-        isLoading: false,
-      });
+        set({
+          cart: response.cart,
+          counter: response.cart?.lineItems?.length || 0,
+          isLoading: false,
+        });
+      } else {
+        set({
+          cart: currentCart,
+          counter: 0,
+          isLoading: false,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to clear cart:", err);
+      set((state) => ({ ...state, isLoading: false }));
     }
-  } catch (err) {
-    console.error("Failed to clear cart:", err);
-    set((state) => ({ ...state, isLoading: false }));
-  }
-},
+  },
 }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCartStore } from "@/hooks/useCartStore";
 import { useWixClient } from "@/hooks/useWixClient";
 import { useRouter } from "next/navigation";
@@ -18,26 +18,27 @@ function getCartSubtotal(cart: any): number {
 function calculateTotals(cart: any) {
   const subtotal = getCartSubtotal(cart);
   const hasItems = cart?.lineItems?.length > 0;
-  const delivery = hasItems ? 10 : 0; // Only charge delivery if there are items
-  const salesTax = subtotal * 0.20;
+  const delivery = hasItems ? 10 : 0;
+  const salesTax = subtotal * 0.2;
   const total = subtotal + delivery;
-  
+
   return {
     subtotal,
     delivery,
     salesTax,
     total,
-    hasItems
+    hasItems,
   };
 }
 
 export default function CheckoutPage() {
   const wixClient = useWixClient();
-  const {
-    cart,
-    removeItem,
-    isLoading,
-  } = useCartStore();
+  const { cart, getCart, removeItem, isLoading } = useCartStore();
+
+  // Always fetch cart on mount!
+  useEffect(() => {
+    getCart(wixClient);
+  }, [wixClient, getCart]);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -151,7 +152,9 @@ export default function CheckoutPage() {
                 />
               </div>
               <div>
-                <label className="block mb-1 font-medium">Country/Region *</label>
+                <label className="block mb-1 font-medium">
+                  Country/Region *
+                </label>
                 <input
                   readOnly
                   type="text"
@@ -204,9 +207,9 @@ export default function CheckoutPage() {
                 type="submit"
                 disabled={loading || !cart?.lineItems?.length}
                 className={`mt-6 w-full py-3 rounded font-semibold transition ${
-                  cart?.lineItems?.length 
-                  ? "bg-black text-white hover:bg-gray-900" 
-                  : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  cart?.lineItems?.length
+                    ? "bg-black text-white hover:bg-gray-900"
+                    : "bg-gray-200 text-gray-500 cursor-not-allowed"
                 }`}
               >
                 {loading ? "Redirecting..." : "Pay Now"}
@@ -229,21 +232,20 @@ export default function CheckoutPage() {
             )}
             <div>
               {cart?.lineItems?.map((item: any) => (
-                <div
-                  className="flex flex-col mb-4 gap-1"
-                  key={item._id}
-                >
+                <div className="flex flex-col mb-4 gap-1" key={item._id}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-medium">{item.productName?.original}</div>
+                      <div className="font-medium">
+                        {item.productName?.original}
+                      </div>
                       <div className="text-gray-500 text-xs">
                         €{item.price?.amount} each
                       </div>
                       <div className="text-gray-700 text-xs mt-1">
-                        Quantity: <span className="font-semibold">{item.quantity}</span>
+                        Quantity:{" "}
+                        <span className="font-semibold">{item.quantity}</span>
                       </div>
                     </div>
-                    {/* Only Remove button */}
                     <div className="flex flex-col items-end">
                       <button
                         className="text-xs text-red-500 border border-red-200 rounded px-2 py-0.5 hover:bg-red-50 transition"
@@ -259,7 +261,8 @@ export default function CheckoutPage() {
             </div>
             <div className="border-t mt-4 pt-4 space-y-2 text-sm">
               {(() => {
-                const { subtotal, delivery, salesTax, total, hasItems } = calculateTotals(cart);
+                const { subtotal, delivery, salesTax, total, hasItems } =
+                  calculateTotals(cart);
                 return (
                   <>
                     <div className="flex justify-between">
@@ -268,7 +271,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex justify-between">
                       <span>Delivery</span>
-                      <span>{hasItems ? `€${delivery.toFixed(2)}` : '--'}</span>
+                      <span>{hasItems ? `€${delivery.toFixed(2)}` : "--"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Sales Tax</span>

@@ -5,7 +5,7 @@ export const middleware = async (request: NextRequest) => {
   const cookies = request.cookies;
   const res = NextResponse.next();
 
-  if (cookies.get("refreshTokenV2")) {
+  if (cookies.get("refreshToken")) {
     return res;
   }
 
@@ -14,7 +14,7 @@ export const middleware = async (request: NextRequest) => {
   });
 
   const tokens = await wixClient.auth.generateVisitorTokens();
-  res.cookies.set("refreshTokenV2", JSON.stringify(tokens.refreshToken), {
+  res.cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
     maxAge: 60 * 60 * 24 * 30,
   });
 
