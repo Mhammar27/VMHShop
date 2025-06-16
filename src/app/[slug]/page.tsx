@@ -30,7 +30,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
         <h1 className="text-4xl font-medium">{product.name}</h1>
         <div
           className="text-gray-500"
-          dangerouslySetInnerHTML={{ __html: product.description || '' }}
+          dangerouslySetInnerHTML={{ __html: product.description || "" }}
         />
         <div className="h-[2px] bg-gray-100" />
 

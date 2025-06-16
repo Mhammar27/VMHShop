@@ -9,13 +9,13 @@ const ProductImages = ({ items }: { items: any }) => {
   return (
     <div className="">
       {/* Main Image */}
-      <div className="h-[500px] relative">
+      <div className="h-[500px] relative bg-white">
         <Image
           src={items[index].image?.url}
           alt=""
           fill
           sizes="50vw"
-          className="object-cover rounded-md"
+          className="object-contain rounded-md" // 👈 changed from 'object-cover' to 'object-contain'
         />
       </div>
 
